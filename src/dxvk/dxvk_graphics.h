@@ -139,6 +139,19 @@ namespace dxvk {
     }
 
     /**
+     * \brief Sets the pipeline handle
+     *
+     * If a pipeline handle has already been
+     * set up, this method will fail and the new pipeline
+     * handle should be destroyed.
+     * \param [in] pipeline The pipeline
+     */
+    bool setPipeline(VkPipeline pipeline) {
+      VkPipeline expected = VK_NULL_HANDLE;
+      return m_pipeline.compare_exchange_strong(expected, pipeline);
+    }
+
+    /**
      * \brief Retrieves pipeline
      * \returns The pipeline handle
      */
@@ -155,7 +168,6 @@ namespace dxvk {
 
   };
 
-  
   /**
    * \brief Graphics pipeline
    * 
@@ -214,6 +226,7 @@ namespace dxvk {
      * state. If necessary, a new pipeline will be created.
      * \param [in] state Pipeline state vector
      * \param [in] renderPass The render pass
+     * \param [in] async Compiler asynchronously
      * \returns Pipeline handle
      */
     VkPipeline getPipelineHandle(

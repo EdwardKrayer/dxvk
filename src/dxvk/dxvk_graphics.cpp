@@ -95,7 +95,6 @@ namespace dxvk {
   
   
   DxvkGraphicsPipeline::~DxvkGraphicsPipeline() {
-
   }
   
   
@@ -149,9 +148,9 @@ namespace dxvk {
       else
         newPipelineHandle = this->compileInstance(newPipeline, renderPass.format());
 
-        // Add new pipeline to the set
-        m_pipelines.push_back(newPipeline);
-        m_pipeMgr->m_numGraphicsPipelines += 1;
+      // Add new pipeline to the set
+      m_pipelines.push_back(newPipeline);
+      m_pipeMgr->m_numGraphicsPipelines += 1;
     }
     
     return newPipelineHandle;
@@ -167,7 +166,6 @@ namespace dxvk {
     if (!instance->setPipeline(newPipelineHandle)) {
       m_vkd->vkDestroyPipeline(m_vkd->device(), newPipelineHandle, nullptr);
     } else {
-      
       if (!m_basePipeline && newPipelineHandle)
         m_basePipeline = newPipelineHandle;
       if (newPipelineHandle != VK_NULL_HANDLE)
@@ -188,7 +186,6 @@ namespace dxvk {
     
     return nullptr;
   }
-  
   
   VkPipeline DxvkGraphicsPipeline::compilePipeline(
     const DxvkGraphicsPipelineStateInfo& state,
@@ -435,7 +432,6 @@ namespace dxvk {
     Logger::debug(str::format("DxvkGraphicsPipeline: Finished in ", td.count(), " ms"));
     return pipeline;
   }
-  
   
   bool DxvkGraphicsPipeline::validatePipelineState(
     const DxvkGraphicsPipelineStateInfo& state) const {
