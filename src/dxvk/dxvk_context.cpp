@@ -163,7 +163,10 @@ namespace dxvk {
      || m_rc[slot].bufferView != bufferView) {
       m_rc[slot].imageView   = imageView;
       m_rc[slot].bufferView  = bufferView;
-      
+      m_rc[slot].bufferSlice = bufferView != nullptr
+        ? bufferView->slice()
+        : DxvkBufferSlice();
+
       m_flags.set(
         DxvkContextFlag::CpDirtyResources,
         DxvkContextFlag::GpDirtyResources);
@@ -3128,7 +3131,8 @@ namespace dxvk {
         switch (binding.type) {
           case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
           case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
-            access.set(DxvkAccess::Write);
+            if (binding.access & VK_ACCESS_SHADER_WRITE_BIT)
+              access.set(DxvkAccess::Write);
             /* fall through */
           
           case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
@@ -3138,7 +3142,8 @@ namespace dxvk {
             break;
         
           case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-            access.set(DxvkAccess::Write);
+            if (binding.access & VK_ACCESS_SHADER_WRITE_BIT)
+              access.set(DxvkAccess::Write);
             /* fall through */
 
           case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
@@ -3147,7 +3152,8 @@ namespace dxvk {
             break;
           
           case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-            access.set(DxvkAccess::Write);
+            if (binding.access & VK_ACCESS_SHADER_WRITE_BIT)
+              access.set(DxvkAccess::Write);
             /* fall through */
 
           case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
@@ -3182,7 +3188,8 @@ namespace dxvk {
         switch (binding.type) {
           case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
           case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
-            access |= VK_ACCESS_SHADER_WRITE_BIT;
+            if (binding.access & VK_ACCESS_SHADER_WRITE_BIT)
+              access |= VK_ACCESS_SHADER_WRITE_BIT;
             /* fall through */
           
           case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
@@ -3195,7 +3202,8 @@ namespace dxvk {
             break;
         
           case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-            access |= VK_ACCESS_SHADER_WRITE_BIT;
+            if (binding.access & VK_ACCESS_SHADER_WRITE_BIT)
+              access |= VK_ACCESS_SHADER_WRITE_BIT;
             /* fall through */
 
           case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
@@ -3207,7 +3215,8 @@ namespace dxvk {
             break;
           
           case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-            access |= VK_ACCESS_SHADER_WRITE_BIT;
+            if (binding.access & VK_ACCESS_SHADER_WRITE_BIT)
+              access |= VK_ACCESS_SHADER_WRITE_BIT;
             /* fall through */
 
           case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:

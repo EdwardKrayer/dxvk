@@ -23,6 +23,11 @@ namespace dxvk {
     m_adapters = this->queryAdapters();
     g_vrInstance.initDeviceExtensions(this);
 
+    for (uint32_t i = 0; i < m_adapters.size(); i++) {
+      m_adapters[i]->enableExtensions(
+        g_vrInstance.getDeviceExtensions(i));
+    }
+
     m_options = DxvkOptions(m_config);
   }
   
@@ -97,7 +102,7 @@ namespace dxvk {
     appInfo.pApplicationName      = appName.c_str();
     appInfo.applicationVersion    = 0;
     appInfo.pEngineName           = "DXVK";
-    appInfo.engineVersion         = VK_MAKE_VERSION(0, 9, 3);
+    appInfo.engineVersion         = VK_MAKE_VERSION(0, 9, 4);
     appInfo.apiVersion            = VK_MAKE_VERSION(1, 1, 0);
     
     VkInstanceCreateInfo info;
